@@ -30,7 +30,7 @@ if now.hour >= 9:
 tomorrow_seconds = (tomorrow_9am - START_DATETIME).total_seconds()
 tomorrow_tier = math.ceil(TARGET_TIER * tomorrow_seconds / TOTAL_SECONDS)
 
-# === 投稿文 ===
+# === 投稿文（???回表示 削除済み）===
 display_date = now.strftime('%Y/%m/%d')
 post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 
@@ -47,19 +47,4 @@ post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 #モンハンNOW
 #ティア進捗
 
-9:00・{display_date}・???回表示
-"""
-
-# === X API投稿 ===
-client = tweepy.Client(
-    consumer_key=os.getenv('TWITTER_API_KEY'),
-    consumer_secret=os.getenv('TWITTER_API_SECRET'),
-    access_token=os.getenv('TWITTER_ACCESS_TOKEN'),
-    access_token_secret=os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
-)
-
-try:
-    response = client.create_tweet(text=post)
-    print("投稿成功！ ID:", response.data['id'])
-except Exception as e:
-    print("投稿失敗:", e)
+9:00・{display_date}"""
