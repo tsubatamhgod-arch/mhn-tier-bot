@@ -20,9 +20,8 @@ elapsed_seconds = (now - START_DATETIME).total_seconds()
 progress_rate = min(elapsed_seconds / TOTAL_SECONDS * 100, 100)
 
 remaining_seconds = TOTAL_SECONDS - elapsed_seconds
-remaining_days = int(remaining_seconds // 86400)
-remaining_hours = int((remaining_seconds % 86400) // 3600)
-remaining_time_str = f"{remaining_days}日と約{remaining_hours}時間"
+remaining_days = int(remaining_seconds // 86400)  # 整数日数のみ
+remaining_time_str = f"{remaining_days}日"
 
 # === ティア計算 ===
 current_tier = math.ceil(TARGET_TIER * elapsed_seconds / TOTAL_SECONDS)
@@ -33,8 +32,12 @@ if now.hour >= 9:
 tomorrow_seconds = (tomorrow_9am - START_DATETIME).total_seconds()
 tomorrow_tier = math.ceil(TARGET_TIER * tomorrow_seconds / TOTAL_SECONDS)
 
-# === 投稿文 ===
-display_date = now.strftime('%Y/%m/%d')
+# === 日割りティア計算 ===
+remaining_days_full = remaining_seconds / 86400
+daily_tier = (TARGET_TIER - current_tier) / remaining_days_full if remaining_days_full > 0 else 0
+daily_tier_rounded = round(daily_tier, 2)
+
+# === 投稿文（日付・時間削除済み）===
 post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 
 ティア999進捗目安 9:00更新
@@ -45,12 +48,11 @@ post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 
 本日9時時点目安ティア：{current_tier}
 明日9時時点目標ティア：{tomorrow_tier}
+1日あたり必要ティア：{daily_tier_rounded}
 
 #モンスターハンターnow
 #モンハンNOW
-#ティア進捗
-
-9:00・{display_date}"""
+#ティア進捗"""
 print("投稿文生成完了")
 
 # === 環境変数チェック ===
@@ -77,6 +79,5 @@ try:
     print(f"リンク: https://x.com/Shoyan_MonsterS/status/{tweet_id}")
 except Exception as e:
     print(f"投稿失敗: {type(e).__name__}: {e}")
-    print("=== デバッグ情報 ===")
     import traceback
     traceback.print_exc()
