@@ -11,9 +11,9 @@ END_DATETIME = datetime.datetime(2025, 12, 11, 9, 0)
 TOTAL_SECONDS = (END_DATETIME - START_DATETIME).total_seconds()
 TARGET_TIER = 999
 
-# === 現在時刻 ===
-now = datetime.datetime.now()
-print(f"現在時刻: {now}")
+# === 現在時刻（9:00に固定） ===
+now = datetime.datetime.now().replace(hour=9, minute=0, second=0)
+print(f"現在時刻（9:00固定）: {now}")
 
 # === 経過・残り時間 ===
 elapsed_seconds = (now - START_DATETIME).total_seconds()
@@ -24,20 +24,21 @@ remaining_days = int(remaining_seconds // 86400)  # 整数日数のみ
 remaining_time_str = f"{remaining_days}日"
 
 # === ティア計算 ===
-current_tier = math.ceil(TARGET_TIER * elapsed_seconds / TOTAL_SECONDS)
+current_tier = math.ceil((TARGET_TIER * elapsed_seconds) / TOTAL_SECONDS)
 
-tomorrow_9am = now.replace(hour=9, minute=0, second=0, microsecond=0)
-if now.hour >= 9:
-    tomorrow_9am += datetime.timedelta(days=1)
+# 明日9:00のティア
+tomorrow_9am = now + datetime.timedelta(days=1)
 tomorrow_seconds = (tomorrow_9am - START_DATETIME).total_seconds()
-tomorrow_tier = math.ceil(TARGET_TIER * tomorrow_seconds / TOTAL_SECONDS)
+tomorrow_tier = math.ceil((TARGET_TIER * tomorrow_seconds) / TOTAL_SECONDS)
 
 # === 日割りティア計算 ===
-remaining_days_full = remaining_seconds / 86400
-daily_tier = (TARGET_TIER - current_tier) / remaining_days_full if remaining_days_full > 0 else 0
-daily_tier_rounded = round(daily_tier, 2)
+if remaining_seconds > 0:
+    daily_tier = (TARGET_TIER - current_tier) / (remaining_seconds / 86400)
+    daily_tier_rounded = round(daily_tier, 2)
+else:
+    daily_tier_rounded = 0
 
-# === 投稿文（日付・時間削除済み）===
+# === 投稿文 ===
 post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 
 ティア999進捗目安 9:00更新
