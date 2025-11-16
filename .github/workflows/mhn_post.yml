@@ -1,26 +1,30 @@
-name: MHN Tier Post (Test Run)
+name: MHN Tier Post (Test 14:40)
 
 on:
+  # 毎日JST 14:40に自動実行（UTC 5:40）
   schedule:
-    # JST 13:10 → UTC 04:10
-    - cron: "10 4 * * *"
+    - cron: "40 5 * * *"
+  # 手動実行も可能
   workflow_dispatch:
 
 jobs:
   post:
     runs-on: ubuntu-latest
-
     steps:
+      # リポジトリのコードをチェックアウト
       - uses: actions/checkout@v4
 
+      # Python 3.11をセットアップ
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
+      # 必要なライブラリをインストール
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # 投稿スクリプト実行
       - name: Run MHN Bot
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
