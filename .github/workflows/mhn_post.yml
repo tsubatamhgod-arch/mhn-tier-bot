@@ -1,59 +1,30 @@
-name: MHN Tier Post
+name: MHN Tier Post (Test Run)
 
-# JST 毎朝 9:00 に実行するため cron を UTC に合わせて "0 0 * * *" にしています（GitHub Actions は UTC 基準）
 on:
   schedule:
-    - cron: "0 0 * * *"   # => JST 09:00
+    # JST 13:10 → UTC 04:10
+    - cron: "10 4 * * *"
   workflow_dispatch:
-
-# 同時実行を防いで古いランがあればキャンセル（安全策）
-concurrency:
-  group: mhn-tier-post-${{ github.ref }}
-  cancel-in-progress: true
-
-# 最小限の権限を明示
-permissions:
-  contents: read
 
 jobs:
   post:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Show environment info
-        run: |
-          echo "Runner: $(uname -a)"
-          python --version
-          pip freeze
-
-      - name: Run MHN Bot (post_tier.py)
+      - name: Run MHN Bot
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
-        run: |
-          echo "=== Run MHN Bot ==="
-          python post_tier.py
+        run: python post_tier.py
