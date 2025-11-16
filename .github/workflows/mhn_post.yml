@@ -2,22 +2,19 @@ name: MHN Tier Post
 
 on:
   schedule:
-    # 毎日 UTC 00:30 → JST 09:30（0分ちょうどの実行は GitHub Actions がスキップしやすいため）
-    - cron: '30 0 * * *'
+    - cron: "30 0 * * *"  # UTC 00:30 → JST 09:30
   workflow_dispatch:
 
 jobs:
   post:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
