@@ -2,20 +2,26 @@ name: MHN Tier Post
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 毎日 00:00 UTC = 09:00 JST
+    # 毎日 UTC 00:30 → JST 09:30（0分ちょうどの実行は GitHub Actions がスキップしやすいため）
+    - cron: '30 0 * * *'
   workflow_dispatch:
 
 jobs:
   post:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Run MHN Bot
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
