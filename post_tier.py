@@ -6,14 +6,16 @@ import pytz
 
 print("=== スクリプト開始 ===")
 
-# === 設定 ===
-START_DATETIME = datetime.datetime(2025, 9, 18, 9, 0)
-END_DATETIME = datetime.datetime(2025, 12, 11, 9, 0)
+# === タイムゾーン設定 ===
+JST = pytz.timezone("Asia/Tokyo")
+
+# === 設定（JST aware）===
+START_DATETIME = JST.localize(datetime.datetime(2025, 9, 18, 9, 0))
+END_DATETIME = JST.localize(datetime.datetime(2025, 12, 11, 9, 0))
 TOTAL_SECONDS = (END_DATETIME - START_DATETIME).total_seconds()
 TARGET_TIER = 999
 
 # === 現在時刻（JST固定で毎朝9:00） ===
-JST = pytz.timezone("Asia/Tokyo")
 now = datetime.datetime.now(JST).replace(hour=9, minute=0, second=0, microsecond=0)
 print(f"現在JST: {now}")
 
