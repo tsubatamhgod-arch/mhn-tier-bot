@@ -33,10 +33,6 @@ tomorrow_9am = now + datetime.timedelta(days=1)
 tomorrow_seconds = (tomorrow_9am - START_DATETIME).total_seconds()
 tomorrow_tier = math.ceil((TARGET_TIER * tomorrow_seconds) / TOTAL_SECONDS)
 
-# === 日割りティア計算 ===
-daily_tier = (TARGET_TIER - current_tier) / (remaining_seconds / 86400) if remaining_seconds > 0 else 0
-daily_tier_rounded = round(daily_tier, 2)
-
 # === 投稿文 ===
 post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 
@@ -48,7 +44,6 @@ post = f"""【シーズン7 集い築け！空飛ぶ探索拠点！】
 
 本日9時時点目安ティア：{current_tier}
 明日9時時点目標ティア：{tomorrow_tier}
-1日あたり必要ティア：{daily_tier_rounded}
 
 #モンスターハンターnow
 #モンハンNOW
