@@ -1,9 +1,6 @@
 name: MHN Tier Post
 
-on:
-  schedule:
-    # JST 8:50 に実行 → 遅延込みで 9:00 ± 数分に収まる最適設定
-    - cron: "50 23 * * *"
+
   workflow_dispatch:
 
 jobs:
